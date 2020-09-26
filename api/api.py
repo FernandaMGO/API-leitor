@@ -7,6 +7,9 @@ from pdfminer.pdfdocument import PDFDocument
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.pdfpage import PDFPage
 from pdfminer.pdfparser import PDFParser
+
+from flask import send_file, send_from_directory, safe_join, abort
+
 import gtts
 from flask import Flask
 from flask import request
@@ -33,9 +36,14 @@ def upload_file():
         for page in PDFPage.create_pages(doc):
             interpreter.process_page(page)
         texto = output_string.getvalue()
+        # Gerando mp3
         tts = gtts.gTTS(texto,  lang="pt-br")
         mp3_fp = BytesIO()
-        tts.write_to_fp(mp3_fp)
-        return texto
+        # tts.write_to_fp(mp3_fp)
+        tts.save('mp3_fp.mp3')
+        
+        return send_file('mp3_fp.mp3', as_attachment=True)
     else:
         return "teste"
+
+app.run()
