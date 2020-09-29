@@ -3,4 +3,4 @@
 
 - Etapa de criação da api
 
-Projeto desenvolvido com @Bet4Arrio que é basicamente o padre do python
+Projeto desenvolvido com auxilio do @Bet4Arrio, o padre do python
