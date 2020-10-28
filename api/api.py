@@ -14,16 +14,28 @@ import gtts
 from flask import Flask
 from flask import request
 
+from flask_cors import CORS
+from flask_cors import CORS, cross_origin
+from flask import jsonify
+
 app = Flask(__name__)
+cors = CORS(app)
+app.config['Content-Type'] = 'multipart/form-data'
+
+CORS(app, resources={r"/*": {"origins": "*"}})
+@cross_origin()
+
 @app.route('/', methods=['GET', 'POST'])
 def hello():
-    return "hello wordl desu"
+    return "Standard route test"
 
 @app.route('/tes1', methods=['GET', 'POST'])
 def hel():
-    return "hello desu"
+    return "Parameter test on the route"
 
-@app.route('/pdf_normal', methods=['GET', 'POST'])
+@app.route('/pdf_normal', methods=['GET', 'POST', 'OPTIONS'])
+@cross_origin()
+
 def upload_file():
     if request.method == 'POST':
         output_string = StringIO()
@@ -41,9 +53,12 @@ def upload_file():
         mp3_fp = BytesIO()
         # tts.write_to_fp(mp3_fp)
         tts.save('mp3_fp.mp3')
-        
+        response = jsonify(message="Simple server is running")
+        response.headers.add("Access-Control-Allow-Origin", "*")
+
         return send_file('mp3_fp.mp3', as_attachment=True)
     else:
-        return "teste"
+        return "Method POST not found"
 
-app.run()
+
+CORS(app.run())
